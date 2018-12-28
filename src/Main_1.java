@@ -100,28 +100,26 @@ public class Main_1 {
     private static void createTable(XWPFDocument document, Order order, List<ProductInOrder> productsInOrder){
         XWPFParagraph p0 = document.createParagraph();
         //create table
-        XWPFTable table = document.createTable();
-        table.setCellMargins(100,100,30,100);
+        XWPFTable table = document.createTable(productsInOrder.size()+1,4);
+        table.setCellMargins(100,100,0,100);
         table.setWidth(10000);
         //create first row
-        XWPFTableRow tableRowOne = table.getRow(0);
-//        tableRowOne.setHeight(0);
 
-        tableRowOne.getCell(0).removeParagraph(0);
-        XWPFParagraph paragraph1 = tableRowOne.getCell(0).addParagraph();
+        table.getRow(0).getCell(0).removeParagraph(0);
+        XWPFParagraph paragraph1 = table.getRow(0).getCell(0).addParagraph();
         paragraph1.setSpacingBefore(0);
         paragraph1.setAlignment(ParagraphAlignment.CENTER);
-//        paragraph1.setVerticalAlignment(TextAlignment.BOTTOM);
-//        paragraph1.setSpacingBefore(0);
-        paragraph1.setSpacingBeforeLines(0);
+        paragraph1.setVerticalAlignment(TextAlignment.BOTTOM);
+        paragraph1.setSpacingBefore(0);
+//        paragraph1.setSpacingBeforeLines(0);
         paragraph1.setSpacingAfter(0);
         XWPFRun run1 = paragraph1.createRun();
         run1.setText("Назва");
         run1.setBold(true);
 
-        tableRowOne.addNewTableCell();
-        tableRowOne.getCell(1).removeParagraph(0);
-        XWPFParagraph paragraph2 = tableRowOne.getCell(1).addParagraph();
+//        tableRowOne.addNewTableCell();
+        table.getRow(0).getCell(1).removeParagraph(0);
+        XWPFParagraph paragraph2 = table.getRow(0).getCell(1).addParagraph();
         XWPFRun run2 = paragraph2.createRun();
         paragraph2.setAlignment(ParagraphAlignment.CENTER);
 //        paragraph2.setSpacingBefore(0);
@@ -129,9 +127,9 @@ public class Main_1 {
         run2.setText("Ціна за день");
         run2.setBold(true);
 
-        tableRowOne.addNewTableCell();
-        tableRowOne.getCell(2).removeParagraph(0);
-        XWPFParagraph paragraph3 = tableRowOne.getCell(2).addParagraph();
+//        tableRowOne.addNewTableCell();
+        table.getRow(0).getCell(2).removeParagraph(0);
+        XWPFParagraph paragraph3 = table.getRow(0).getCell(2).addParagraph();
         paragraph3.setAlignment(ParagraphAlignment.CENTER);
         paragraph3.setSpacingBefore(0);
         paragraph3.setSpacingAfter(0);
@@ -139,9 +137,9 @@ public class Main_1 {
         run3.setText("Кількість днів");
         run3.setBold(true);
 
-        tableRowOne.addNewTableCell();
-        tableRowOne.getCell(3).removeParagraph(0);
-        XWPFParagraph paragraph4 = tableRowOne.getCell(3).addParagraph();
+//        tableRowOne.addNewTableCell();
+        table.getRow(0).getCell(3).removeParagraph(0);
+        XWPFParagraph paragraph4 = table.getRow(0).getCell(3).addParagraph();
         XWPFRun run4= paragraph4.createRun();
         paragraph4.setAlignment(ParagraphAlignment.CENTER);
         paragraph4.setSpacingBefore(0);
@@ -149,28 +147,22 @@ public class Main_1 {
         run4.setText("Сума");
         run4.setBold(true);
 
-        tableRowOne.getCell(0).setColor("CCCCCC");
-        tableRowOne.getCell(1).setColor("CCCCCC");
-        tableRowOne.getCell(2).setColor("CCCCCC");
-        tableRowOne.getCell(3).setColor("CCCCCC");
-        tableRowOne.getCell(0).setWidth("7600");
-        tableRowOne.getCell(1).setWidth("800");
-        tableRowOne.getCell(2).setWidth("800");
-        tableRowOne.getCell(3).setWidth("800");
+        table.getRow(0).getCell(0).setColor("CCCCCC");
+        table.getRow(0).getCell(1).setColor("CCCCCC");
+        table.getRow(0).getCell(2).setColor("CCCCCC");
+        table.getRow(0).getCell(3).setColor("CCCCCC");
+        table.getRow(0).getCell(0).setWidth("7000");
+        table.getRow(0).getCell(1).setWidth("1000");
+        table.getRow(0).getCell(2).setWidth("1000");
+        table.getRow(0).getCell(3).setWidth("1000");
 
         //create second row
-        XWPFTableRow tableRowTwo = table.createRow();
-        tableRowTwo.setHeight(0);
-        tableRowTwo.getCell(0).setText("col one, row two");
-        tableRowTwo.getCell(1).setText("col two, row two");
-        tableRowTwo.getCell(2).setText("col three, row two");
-        tableRowTwo.getCell(3).setText("col four, row two");
-        //create third row
-        XWPFTableRow tableRowThree = table.createRow();
-        tableRowThree.getCell(0).setText("col one, row three");
-        tableRowThree.getCell(1).setText("col two, row three");
-        tableRowThree.getCell(2).setText("col three, row three");
-        tableRowThree.getCell(3).setText("col four, row three");
+        for (int i = 1; i <= productsInOrder.size(); i++) {
+            table.getRow(i).getCell(0).setText(productsInOrder.get(i-1).getProductName() + " - (" + productsInOrder.get(i-1).getProductModel() + ")");
+            table.getRow(i).getCell(1).setText(productsInOrder.get(i-1).getProductPriceString());
+            table.getRow(i).getCell(2).setText(order.getCountDay()+"");
+            table.getRow(i).getCell(3).setText((productsInOrder.get(i-1).getProductPrice() * order.getCountDay())+"");
+        }
     }
 
     private static Map<String, Object> createDataMap(){
