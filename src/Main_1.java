@@ -1,12 +1,14 @@
-import org.apache.poi.sl.usermodel.VerticalAlignment;
+import javafx.scene.text.FontWeight;
+import org.apache.poi.ss.usermodel.*;
+import org.apache.poi.xssf.usermodel.XSSFCell;
+import org.apache.poi.xssf.usermodel.XSSFSheet;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.apache.poi.xwpf.usermodel.*;
 
 import java.io.*;
 import java.math.BigInteger;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 import static org.apache.poi.xwpf.usermodel.VerticalAlign.BASELINE;
 
@@ -15,6 +17,7 @@ public class Main_1 {
     public static void main(String[] args) {
         String filePathDocTemplateX ="D:/Java/t2studio/CRM_eventhelp_web/src/main/resources/static/documents/dogovor_fiz_template.docx";
         String filePathDocX ="D:/Java/t2studio/CRM_eventhelp_web/src/main/resources/static/documents/Fiz_Document.docx";
+        String filePathXlsX ="D:/Java/t2studio/CRM_eventhelp_web/src/main/resources/static/documents/Fiz_Document.xlsx";
 //        String filePathDocTemplate ="D:/Java/t2studio/CRM_eventhelp_web/src/main/resources/static/documents/dogovor_fiz_template.doc";
 //        String filePathDoc = "D:/Java/t2studio/CRM_eventhelp_web/src/main/resources/static/documents/Fiz_Document.doc";
 
@@ -23,8 +26,15 @@ public class Main_1 {
         order.setCountDay(3);
         order.setOrderId(777);
 
+//        try {
+//            createDocX(filePathDocTemplateX, filePathDocX, createDataMap(), order, createProductsInOrder());
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
+        List<ProductInOrder> productsInOrder = new ArrayList<>();
+        Customer customer = new Customer();
         try {
-            createDocX(filePathDocTemplateX, filePathDocX, createDataMap(), order, createProductsInOrder());
+            createXlsX(filePathXlsX,order,productsInOrder,customer);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -78,7 +88,49 @@ public class Main_1 {
         fileOutputStream.close();
         return resultFile;
     }
-    
+
+    /*
+    По принцыпу сметы. Список оборудки сумма, адрес доставки, имя заказчика.
+     */
+    public static File createXlsX(String fileParth, Order order, List<ProductInOrder> productsInOrders, Customer customer) throws IOException {
+        File resultFile = new File(fileParth);
+        XSSFWorkbook document = new XSSFWorkbook();
+        FileOutputStream fileOutputStream = new FileOutputStream(resultFile);
+
+        XSSFSheet sheet = document.createSheet("order_info");
+        Row rowOrderNum = sheet.createRow(2);
+        Row rowCustomer = sheet.createRow(3);
+        Row rowAddress= sheet.createRow(4);
+        Font fontBold = document.createFont();
+        fontBold.setBold(true);
+
+        XSSFCell cell11 = (XSSFCell) rowOrderNum.createCell(1);
+        XSSFCell cell12 = (XSSFCell) rowOrderNum.createCell(2);
+        XSSFCell cell13 = (XSSFCell) rowOrderNum.createCell(3);
+        XSSFCell cell14 = (XSSFCell) rowOrderNum.createCell(4);
+
+        CellStyle cellStyleLeftBold = document.createCellStyle();
+        cellStyleLeftBold.setAlignment(HorizontalAlignment.LEFT);
+        cellStyleLeftBold.setFont(fontBold);
+        cell12.setCellStyle(cellStyleLeftBold);
+
+        CellStyle cellStyleCenter = document.createCellStyle();
+        cellStyleCenter.setAlignment(HorizontalAlignment.CENTER);
+        cell13.setCellStyle(cellStyleCenter);
+        cell14.setCellStyle(cellStyleCenter);
+
+        cell11.setCellValue("Заказ №");
+        cell12.setCellValue(order.getOrderId());
+        cell13.setCellValue("от");
+        cell12.setCellValue(order.getDateIncomeStringDDMMYYYY());
+
+        document.write(fileOutputStream);
+        fileOutputStream.flush();
+        fileOutputStream.close();
+
+        return resultFile;
+    }
+
     private static String replaceDataValue(String instring, Map<String, Object> data){
         return instring.replace("ORDER_NUM", data.get("ORDER_NUM").toString())
                     .replace("FIO", data.get("FIO").toString())
