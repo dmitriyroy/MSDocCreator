@@ -121,9 +121,6 @@ public class Main_1 {
             Row rowDateStart = sheet.createRow(4);
             Row rowAddress = sheet.createRow(5);
             Row rowContractor = sheet.createRow(6);
-//            Row rowShipOut = sheet.createRow(4);
-//            Row rowShipBack = sheet.createRow(5);
-
 
             CellRangeAddress cellRangeOrderNum = new CellRangeAddress(1, 1, 4, 7);
             CellRangeAddress cellRangeProject = new CellRangeAddress(2, 2, 4, 7);
@@ -148,7 +145,6 @@ public class Main_1 {
             sheet.setColumnWidth(8, rowWidth);
             Font fontBold = document.createFont();
             fontBold.setBold(true);
-//            fontBold.setFontHeight((short) 10);
 
             XSSFCell cell11 = (XSSFCell) rowOrderNum.createCell(3);
             XSSFCell cell12 = (XSSFCell) rowOrderNum.createCell(4);
