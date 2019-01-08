@@ -208,9 +208,6 @@ public class Main_1 {
 
             CellStyle cellStyleCenter = document.createCellStyle();
             cellStyleCenter.setAlignment(HorizontalAlignment.CENTER);
-//            cell13.setCellStyle(cellStyleCenter);
-//            cell14.setCellStyle(cellStyleCenter);
-
 
             InputStream inputStream = new FileInputStream(documentFolderPath + "/logo_big.png");
             byte[] imageBytes = IOUtils.toByteArray(inputStream);
