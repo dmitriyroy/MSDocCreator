@@ -241,18 +241,6 @@ public class Main_1 {
             cell61.setCellValue("Подрядчик:");
             cell62.setCellValue("Event Help (098) 646-55-95 / (068) 968-65-65");
 
-//            XSSFCell cell21 = ((XSSFRow) rowCustomer).createCell(0);
-//            XSSFCell cell22 = ((XSSFRow) rowCustomer).createCell(1);
-
-//            XSSFCell cell31 = ((XSSFRow) rowAddress).createCell(0);
-//            XSSFCell cell32 = ((XSSFRow) rowAddress).createCell(1);
-
-//            XSSFCell cell41 = ((XSSFRow) rowShipOut).createCell(0);
-//            XSSFCell cell42 = ((XSSFRow) rowShipOut).createCell(1);
-
-//            XSSFCell cell51 = ((XSSFRow) rowShipBack).createCell(0);
-//            XSSFCell cell52 = ((XSSFRow) rowShipBack).createCell(1);
-
             XSSFColor colorBlack = new XSSFColor(Color.BLACK);
             XSSFColor colorLightGray = new XSSFColor(Color.LIGHT_GRAY);
 
@@ -359,7 +347,6 @@ public class Main_1 {
             int rowNum = 9;
             createTableRow2(rowNum, sheet, null, cellHeadStyleCenterBoldGray, data, "head");
 
-
             rowNum++;
             int rowCount = 1;
             for(ProductInOrder productInOrder : productsInOrders){
@@ -384,20 +371,18 @@ public class Main_1 {
                 rowNum++;
             }
 
-//                rowNum++;
             Row rowSum = sheet.createRow(++rowNum);
 
-                rowNum++;
+            rowNum++;
             Row rowDiscount = sheet.createRow(++rowNum);
 
-                rowNum++;
+            rowNum++;
             Row rowDelivery = sheet.createRow(++rowNum);
 
-                rowNum++;
+            rowNum++;
             Row rowItog = sheet.createRow(++rowNum);
 
-                rowNum++;
-                rowNum++;
+            rowNum+=2;
             Row rowFOP = sheet.createRow(++rowNum);
 
             rowNum++;
