@@ -1,5 +1,6 @@
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.ss.util.CellRangeAddress;
+import org.apache.poi.util.IOUtils;
 import org.apache.poi.xssf.usermodel.*;
 import org.apache.poi.xssf.usermodel.extensions.XSSFCellBorder;
 import org.apache.poi.xwpf.usermodel.*;
@@ -17,7 +18,7 @@ public class Main_1 {
         String filePathDocTemplateX = documentFolderPath + "/dogovor_fiz_template.docx";
         String filePathDocX = documentFolderPath + "/Contract_fiz_order-";
         String filePathXlsX = documentFolderPath + "/Estimate_order-";
-        String filePathXlsX2 = documentFolderPath + "/Smeta_EventHelp_order-";
+        String filePathXlsX2 = "/Smeta_EventHelp_order-";
 //        String filePathDocTemplate ="D:/Java/t2studio/CRM_eventhelp_web/src/main/resources/static/documents/dogovor_fiz_template.doc";
 //        String filePathDoc = "D:/Java/t2studio/CRM_eventhelp_web/src/main/resources/static/documents/Fiz_Document.doc";
 
@@ -29,6 +30,7 @@ public class Main_1 {
         order.setDeliveryAddress("г.Днепр, ул.Титова, д.14А, кв.55");
         try {
             order.setDateIncome(dateFormat.parse("2019-01-01"));
+            order.setDateStart(dateFormat.parse("2019-01-04"));
             order.setDateShipOut(dateFormat.parse("2019-01-03"));
             order.setDateShipBack(dateFormat.parse("2019-01-05"));
         } catch (ParseException e) {
@@ -42,7 +44,7 @@ public class Main_1 {
         List<ProductInOrder> productsInOrder = createProductsInOrder();
 
 //        createXlsX(filePathXlsX + order.getOrderId() + ".xlsx", order, productsInOrder, customer);
-        createXlsX2(filePathXlsX2 + order.getOrderId() + ".xlsx", order, productsInOrder, customer);
+        createXlsX2(documentFolderPath, filePathXlsX2 + order.getOrderId() + ".xlsx", order, productsInOrder, customer);
 //        try {
 //            createDocX(filePathDocTemplateX, filePathDocX + order.getOrderId() + ".docx", createDataMap(), order, productsInOrder);
 //        } catch (IOException e) {
@@ -103,12 +105,12 @@ public class Main_1 {
     /*
     2 аркуш
      */
-    public static File createXlsX2(String filePath, Order order, List<ProductInOrder> productsInOrders, Customer customer){
-        File resultFile = new File(filePath);
+    public static File createXlsX2(String documentFolderPath, String outFileName, Order order, List<ProductInOrder> productsInOrders, Customer customer){
+        File resultFile = new File(documentFolderPath + outFileName);
         XSSFWorkbook document = new XSSFWorkbook();
         FileOutputStream fileOutputStream = null;
 
-        int rowWidth = 4000;
+        int rowWidth = 4500;
 
         try {
             fileOutputStream = new FileOutputStream(resultFile);
@@ -209,6 +211,23 @@ public class Main_1 {
 //            cell13.setCellStyle(cellStyleCenter);
 //            cell14.setCellStyle(cellStyleCenter);
 
+
+            InputStream inputStream = new FileInputStream(documentFolderPath + "/logo_big.png");
+            byte[] imageBytes = IOUtils.toByteArray(inputStream);
+            int pictureIdx = document.addPicture(imageBytes, Workbook.PICTURE_TYPE_PNG);
+            inputStream.close();
+            CreationHelper helper = document.getCreationHelper();
+            Drawing drawing = sheet.createDrawingPatriarch();
+            ClientAnchor anchor = helper.createClientAnchor();
+
+            anchor.setCol1(0);
+            anchor.setRow1(1);
+            anchor.setRow2(7);
+            anchor.setCol2(3);
+
+            drawing.createPicture(anchor, pictureIdx);
+
+
             cell11.setCellValue("Заказ №");
             cell12.setCellValue(order.getOrderId() + " от " + order.getDateIncomeStringDDMMYYYY());
             cell21.setCellValue("Проект:");
@@ -246,7 +265,6 @@ public class Main_1 {
 
             XSSFCellStyle cellStyleOrderBottomBorder = document.createCellStyle();
             cellStyleOrderBottomBorder.setAlignment(HorizontalAlignment.LEFT);
-//            cellStyleOrderBottomBorder.setFont(fontBold);
             cellStyleOrderBottomBorder.setVerticalAlignment(VerticalAlignment.BOTTOM);
             cellStyleOrderBottomBorder.setWrapText(true);
             createBorderB(colorBlack, cellStyleOrderBottomBorder);
@@ -256,9 +274,7 @@ public class Main_1 {
             cell13.setCellStyle(cellStyleOrderBottomBorderBold);
             cell14.setCellStyle(cellStyleOrderBottomBorderBold);
             cell15.setCellStyle(cellStyleOrderBottomBorderBold);
-//            cell16.setCellStyle(cellStyleOrderBottomBorder);
-//            cell17.setCellStyle(cellStyleOrderBottomBorder);
-//            cell18.setCellStyle(cellStyleOrderBottomBorder);
+
             cell22.setCellStyle(cellStyleOrderBottomBorder);
             cell23.setCellStyle(cellStyleOrderBottomBorder);
             cell24.setCellStyle(cellStyleOrderBottomBorder);
@@ -310,10 +326,15 @@ public class Main_1 {
             firstCellStyleRightNoBorder.setVerticalAlignment(VerticalAlignment.BOTTOM);
             firstCellStyleRightNoBorder.setWrapText(true);
 
+            XSSFCellStyle firstCellStyleCenterNoBorderBold = document.createCellStyle();
+            firstCellStyleCenterNoBorderBold.setAlignment(HorizontalAlignment.CENTER);
+            firstCellStyleCenterNoBorderBold.setVerticalAlignment(VerticalAlignment.BOTTOM);
+            firstCellStyleCenterNoBorderBold.setFont(fontBold);
+            firstCellStyleCenterNoBorderBold.setWrapText(true);
+
             XSSFCellStyle firstCellStyleCenterNoBorder = document.createCellStyle();
             firstCellStyleCenterNoBorder.setAlignment(HorizontalAlignment.CENTER);
             firstCellStyleCenterNoBorder.setVerticalAlignment(VerticalAlignment.BOTTOM);
-            firstCellStyleCenterNoBorder.setFont(fontBold);
             firstCellStyleCenterNoBorder.setWrapText(true);
 
             XSSFCellStyle firstCellStyleLeftNoBorder = document.createCellStyle();
@@ -321,51 +342,109 @@ public class Main_1 {
             firstCellStyleLeftNoBorder.setVerticalAlignment(VerticalAlignment.BOTTOM);
             firstCellStyleLeftNoBorder.setWrapText(true);
 
-/*
-            CellRangeAddress cellFirstColl = new CellRangeAddress(6, 6, 0, 1);
-            sheet.addMergedRegion(cellFirstColl);
+
+            CellRangeAddress cellProductName = new CellRangeAddress(9, 9, 2, 3);
+            sheet.addMergedRegion(cellProductName);
 
             List<String> data = new ArrayList<>();
-            data.add(0,"Наименование");
-            data.add(1,"Количество");
-            data.add(2,"Цена в день");
-            data.add(3,"Количество дней");
-            data.add(4,"Сумма");
-            createTableRow(9, sheet, null, cellHeadStyleCenterBoldGray, data, "head");
+            data.add(0,"№");
+            data.add(1,"Категория");
+            data.add(2,"Наименование");
+            data.add(3,"Кол-во");
+            data.add(4,"Цена в день");
+            data.add(5,"Период");
+            data.add(6,"Сумма");
+            data.add(7,"Примечание");
 
-            int rowNum = 7;
+            int rowNum = 9;
+            createTableRow2(rowNum, sheet, null, cellHeadStyleCenterBoldGray, data, "head");
+
+
+            rowNum++;
+            int rowCount = 1;
             for(ProductInOrder productInOrder : productsInOrders){
-                CellRangeAddress cellFirst = new CellRangeAddress(rowNum, rowNum, 0, 1);
-                sheet.addMergedRegion(cellFirst);
+                CellRangeAddress cellProduct = new CellRangeAddress(rowNum, rowNum, 2, 3);
+                sheet.addMergedRegion(cellProduct);
 
                 List<String> data1 = new ArrayList<>();
                 String model = "";
                 if(productInOrder.getProductModel() != null && productInOrder.getProductModel().trim().length() > 0){
                     model = " - (" + productInOrder.getProductModel() + ")";
                 }
-                data1.add(0,productInOrder.getProductName() + model);
-                data1.add(1,productInOrder.getProductAmountString());
-                data1.add(2,productInOrder.getProductPriceString());
-                data1.add(3,order.getCountDay() + "");
-                data1.add(4,"" + (productInOrder.getProductPrice() * productInOrder.getProductAmount() * order.getCountDay()));
-                createTableRow(rowNum, sheet, firstCellStyleLeft, cellHeadStyleCenterBold, data1, null);
+                data1.add(0,"" + rowCount++);
+                data1.add(1,"категория" + productInOrder.getProductId());
+                data1.add(2,productInOrder.getProductName() + model);
+                data1.add(3,productInOrder.getProductAmountString());
+                data1.add(4,productInOrder.getProductPriceString());
+                data1.add(5,order.getCountDay() + "");
+                data1.add(6,"" + (productInOrder.getProductPrice() * productInOrder.getProductAmount() * order.getCountDay()));
+                data1.add(7,order.getDescription());
+                createTableRow2(rowNum, sheet, firstCellStyleLeft, cellHeadStyleCenterBold, data1, null);
 
                 rowNum++;
             }
 
-            Row rowSum = sheet.createRow(rowNum);
+//                rowNum++;
+            Row rowSum = sheet.createRow(++rowNum);
 
+                rowNum++;
+            Row rowDiscount = sheet.createRow(++rowNum);
 
-            XSSFCell cellItog = (XSSFCell) rowSum.createCell(4);
-            cellItog.setCellStyle(firstCellStyleRightNoBorder);
-            XSSFCell cellSum = (XSSFCell) rowSum.createCell(5);
-            cellSum.setCellStyle(firstCellStyleCenterNoBorder);
-            XSSFCell cellGrn = (XSSFCell) rowSum.createCell(6);
-            cellGrn.setCellStyle(firstCellStyleLeftNoBorder);
-            cellItog.setCellValue("ИТОГО:");
-            cellSum.setCellValue(order.getPriceDiscountString());
-            cellGrn.setCellValue("грн.");
-*/
+                rowNum++;
+            Row rowDelivery = sheet.createRow(++rowNum);
+
+                rowNum++;
+            Row rowItog = sheet.createRow(++rowNum);
+
+                rowNum++;
+                rowNum++;
+            Row rowFOP = sheet.createRow(++rowNum);
+
+            rowNum++;
+            Row rowFaximile = sheet.createRow(++rowNum);
+
+            XSSFCell cellSumLable = (XSSFCell) rowSum.createCell(5);
+            XSSFCell cellSum = (XSSFCell) rowSum.createCell(7);
+            cellSumLable.setCellStyle(firstCellStyleCenterNoBorderBold);
+            cellSum.setCellStyle(cellHeadStyleCenterBold);
+            cellSumLable.setCellValue("Итого");
+            cellSum.setCellValue(order.getPriceDiscountString() + " грн.");
+
+            XSSFCell cellDiscountLable = (XSSFCell) rowDiscount.createCell(5);
+            XSSFCell cellDiscount = (XSSFCell) rowDiscount.createCell(7);
+            cellDiscountLable.setCellStyle(firstCellStyleCenterNoBorderBold);
+            cellDiscount.setCellStyle(cellHeadStyleCenterBold);
+            cellDiscountLable.setCellValue("Скидка");
+            cellDiscount.setCellValue(0.0 + " грн.");
+
+            XSSFCell cellDeliveryLable = (XSSFCell) rowDelivery.createCell(5);
+            XSSFCell cellDelivery = (XSSFCell) rowDelivery.createCell(7);
+            cellDeliveryLable.setCellStyle(firstCellStyleCenterNoBorderBold);
+            cellDelivery.setCellStyle(cellHeadStyleCenterBold);
+            cellDeliveryLable.setCellValue("Доставка");
+            cellDelivery.setCellValue(0.0 + " грн.");
+
+            XSSFCell cellItogLable = (XSSFCell) rowItog.createCell(5);
+            XSSFCell cellItog = (XSSFCell) rowItog.createCell(7);
+            cellItogLable.setCellStyle(firstCellStyleCenterNoBorderBold);
+            cellItog.setCellStyle(cellHeadStyleCenterBold);
+            cellItogLable.setCellValue("Всего");
+            cellItog.setCellValue(order.getPriceDiscountString() + " грн.");
+
+            XSSFCell cellFOPLable = (XSSFCell) rowFOP.createCell(5);
+            XSSFCell cellFOP = (XSSFCell) rowFOP.createCell(7);
+            cellFOPLable.setCellStyle(firstCellStyleCenterNoBorderBold);
+            cellFOP.setCellStyle(cellHeadStyleCenterBold);
+            cellFOPLable.setCellValue("Безнал ФОП");
+            cellFOP.setCellValue(0.0 + " грн.");
+
+            XSSFCell cellFaksimileLable = (XSSFCell) rowFaximile.createCell(5);
+            XSSFCell cellFaksimile = (XSSFCell) rowFaximile.createCell(7);
+            cellFaksimileLable.setCellStyle(firstCellStyleCenterNoBorder);
+            cellFaksimile.setCellStyle(firstCellStyleCenterNoBorder);
+            cellFaksimileLable.setCellValue("______________");
+            cellFaksimile.setCellValue("/ Креденцер В.А./");
+
             document.write(fileOutputStream);
         }catch (IOException ex){
 
@@ -557,6 +636,50 @@ public class Main_1 {
         }
 
         return resultFile;
+    }
+
+    private static void createTableRow2(int rowNum, XSSFSheet sheet, XSSFCellStyle firstCellStyle, XSSFCellStyle cellStyle, List<String> data, String isHead){
+        Row row = sheet.createRow(rowNum);
+
+
+        XSSFCell cell1 = (XSSFCell) row.createCell(0);
+        cell1.setCellStyle(cellStyle);
+        XSSFCell cell2 = (XSSFCell) row.createCell(1);
+        cell2.setCellStyle(cellStyle);
+        XSSFCell cell3 = (XSSFCell) row.createCell(2);
+        cell3.setCellStyle(isHead != null ? cellStyle : firstCellStyle);
+        XSSFCell _cell3 = (XSSFCell) row.createCell(3);
+        _cell3.setCellStyle(isHead != null ? cellStyle : firstCellStyle);
+        XSSFCell cell4 = (XSSFCell) row.createCell(4);
+        cell4.setCellStyle(cellStyle);
+        XSSFCell cell5 = (XSSFCell) row.createCell(5);
+        cell5.setCellStyle(cellStyle);
+        XSSFCell cell6 = (XSSFCell) row.createCell(6);
+        cell6.setCellStyle(cellStyle);
+        XSSFCell cell7 = (XSSFCell) row.createCell(7);
+        cell7.setCellStyle(cellStyle);
+        XSSFCell cell8 = (XSSFCell) row.createCell(8);
+        cell8.setCellStyle(cellStyle);
+
+        if(isHead != null) {
+            cell1.setCellValue(data.get(0));
+            cell2.setCellValue(data.get(1));
+            cell3.setCellValue(data.get(2));
+            cell4.setCellValue(data.get(3));
+            cell5.setCellValue(data.get(4));
+            cell6.setCellValue(data.get(5));
+            cell7.setCellValue(data.get(6));
+            cell8.setCellValue(data.get(7));
+        }else {
+            cell1.setCellValue(Integer.parseInt(data.get(0)));
+            cell2.setCellValue(data.get(1));
+            cell3.setCellValue(data.get(2));
+            cell4.setCellValue(Integer.parseInt(data.get(3)));
+            cell5.setCellValue(Double.parseDouble(data.get(4)) + " грн.");
+            cell6.setCellValue(Integer.parseInt(data.get(5)));
+            cell7.setCellValue(Double.parseDouble(data.get(6)) + " грн.");
+            cell8.setCellValue(data.get(7));
+        }
     }
 
     private static void createTableRow(int rowNum, XSSFSheet sheet, XSSFCellStyle firstCellStyle, XSSFCellStyle cellStyle, List<String> data, String isHead){
