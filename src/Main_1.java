@@ -234,8 +234,8 @@ public class Main_1 {
             cell61.setCellValue("Подрядчик:");
             cell62.setCellValue("Event Help (098) 646-55-95 / (068) 968-65-65");
 
-            XSSFColor colorBlack = new XSSFColor(Color.BLACK);
-            XSSFColor colorLightGray = new XSSFColor(Color.LIGHT_GRAY);
+            short colorBlack = IndexedColors.BLACK.getIndex();
+            short colorLightGray = IndexedColors.GREY_25_PERCENT.getIndex();
 
             XSSFCellStyle cellStyleOrderBottomBorderBold = document.createCellStyle();
             cellStyleOrderBottomBorderBold.setAlignment(HorizontalAlignment.LEFT);
@@ -512,8 +512,8 @@ public class Main_1 {
             cell51.setCellValue("Дата возврата:");
             cell52.setCellValue(order.getDateShipBackStringDDMMYYYY());
 
-            XSSFColor colorBlack = new XSSFColor(Color.BLACK);
-            XSSFColor colorLightGray = new XSSFColor(Color.LIGHT_GRAY);
+            short colorBlack = IndexedColors.BLACK.getIndex();
+            short colorLightGray = IndexedColors.GREY_25_PERCENT.getIndex();
 
             XSSFCellStyle cellHeadStyleCenterBoldGray = document.createCellStyle();
             cellHeadStyleCenterBoldGray.setAlignment(HorizontalAlignment.CENTER);
@@ -691,19 +691,19 @@ public class Main_1 {
         }
     }
 
-    private static void createBorderTRBL(XSSFColor color, XSSFCellStyle cellStyle) {
+    private static void createBorderTRBL(short color, XSSFCellStyle cellStyle) {
         cellStyle.setBorderTop(BorderStyle.THIN);
         cellStyle.setBorderRight(BorderStyle.THIN);
         cellStyle.setBorderBottom(BorderStyle.THIN);
         cellStyle.setBorderLeft(BorderStyle.THIN);
-        cellStyle.setBorderColor(XSSFCellBorder.BorderSide.TOP, color);
-        cellStyle.setBorderColor(XSSFCellBorder.BorderSide.LEFT, color);
-        cellStyle.setBorderColor(XSSFCellBorder.BorderSide.RIGHT, color);
-        cellStyle.setBorderColor(XSSFCellBorder.BorderSide.BOTTOM, color);
+        cellStyle.setTopBorderColor(color);
+        cellStyle.setRightBorderColor(color);
+        cellStyle.setBottomBorderColor(color);
+        cellStyle.setLeftBorderColor(color);
     }
-    private static void createBorderB(XSSFColor color, XSSFCellStyle cellStyle) {
+    private static void createBorderB(short color, XSSFCellStyle cellStyle) {
         cellStyle.setBorderBottom(BorderStyle.THIN);
-        cellStyle.setBorderColor(XSSFCellBorder.BorderSide.BOTTOM, color);
+        cellStyle.setBottomBorderColor(color);
     }
 
     private static String replaceDataValue(String instring, Map<String, Object> data){
