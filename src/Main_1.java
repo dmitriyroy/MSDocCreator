@@ -110,7 +110,8 @@ public class Main_1 {
         XSSFWorkbook document = new XSSFWorkbook();
         FileOutputStream fileOutputStream = null;
 
-        int rowWidth = 4500;
+        int rowWidth = 3800;
+        short fontWeight = 10;
 
         try {
             fileOutputStream = new FileOutputStream(resultFile);
@@ -143,8 +144,14 @@ public class Main_1 {
             sheet.setColumnWidth(6, rowWidth);
             sheet.setColumnWidth(7, rowWidth);
             sheet.setColumnWidth(8, rowWidth);
+
             Font fontBold = document.createFont();
             fontBold.setBold(true);
+            fontBold.setFontHeightInPoints(fontWeight);
+
+            Font font = document.createFont();
+            font.setFontHeightInPoints(fontWeight);
+
 
             XSSFCell cell11 = (XSSFCell) rowOrderNum.createCell(3);
             XSSFCell cell12 = (XSSFCell) rowOrderNum.createCell(4);
@@ -204,6 +211,7 @@ public class Main_1 {
 
             CellStyle cellStyleCenter = document.createCellStyle();
             cellStyleCenter.setAlignment(HorizontalAlignment.CENTER);
+            cellStyleCenter.setFont(font);
 
             InputStream inputStream = new FileInputStream(documentFolderPath + "/logo_big.png");
             byte[] imageBytes = IOUtils.toByteArray(inputStream);
@@ -245,6 +253,7 @@ public class Main_1 {
             createBorderB(colorBlack, cellStyleOrderBottomBorderBold);
 
             XSSFCellStyle cellStyleOrderBottomBorder = document.createCellStyle();
+            cellStyleOrderBottomBorder.setFont(font);
             cellStyleOrderBottomBorder.setAlignment(HorizontalAlignment.LEFT);
             cellStyleOrderBottomBorder.setVerticalAlignment(VerticalAlignment.BOTTOM);
             cellStyleOrderBottomBorder.setWrapText(true);
@@ -291,34 +300,39 @@ public class Main_1 {
             createBorderTRBL(colorBlack, cellHeadStyleCenterBoldGray);
 
             XSSFCellStyle cellHeadStyleCenterBold = document.createCellStyle();
+            cellHeadStyleCenterBold.setFont(font);
             cellHeadStyleCenterBold.setAlignment(HorizontalAlignment.CENTER);
             cellHeadStyleCenterBold.setVerticalAlignment(VerticalAlignment.BOTTOM);
             cellHeadStyleCenterBold.setWrapText(true);
             createBorderTRBL(colorBlack, cellHeadStyleCenterBold);
 
             XSSFCellStyle firstCellStyleLeft = document.createCellStyle();
+            firstCellStyleLeft.setFont(font);
             firstCellStyleLeft.setAlignment(HorizontalAlignment.LEFT);
             firstCellStyleLeft.setVerticalAlignment(VerticalAlignment.BOTTOM);
             firstCellStyleLeft.setWrapText(true);
             createBorderTRBL(colorBlack, firstCellStyleLeft);
 
             XSSFCellStyle firstCellStyleRightNoBorder = document.createCellStyle();
+            firstCellStyleRightNoBorder.setFont(font);
             firstCellStyleRightNoBorder.setAlignment(HorizontalAlignment.RIGHT);
             firstCellStyleRightNoBorder.setVerticalAlignment(VerticalAlignment.BOTTOM);
             firstCellStyleRightNoBorder.setWrapText(true);
 
             XSSFCellStyle firstCellStyleCenterNoBorderBold = document.createCellStyle();
+            firstCellStyleCenterNoBorderBold.setFont(fontBold);
             firstCellStyleCenterNoBorderBold.setAlignment(HorizontalAlignment.CENTER);
             firstCellStyleCenterNoBorderBold.setVerticalAlignment(VerticalAlignment.BOTTOM);
-            firstCellStyleCenterNoBorderBold.setFont(fontBold);
             firstCellStyleCenterNoBorderBold.setWrapText(true);
 
             XSSFCellStyle firstCellStyleCenterNoBorder = document.createCellStyle();
+            firstCellStyleCenterNoBorder.setFont(font);
             firstCellStyleCenterNoBorder.setAlignment(HorizontalAlignment.CENTER);
             firstCellStyleCenterNoBorder.setVerticalAlignment(VerticalAlignment.BOTTOM);
             firstCellStyleCenterNoBorder.setWrapText(true);
 
             XSSFCellStyle firstCellStyleLeftNoBorder = document.createCellStyle();
+            firstCellStyleLeftNoBorder.setFont(font);
             firstCellStyleLeftNoBorder.setAlignment(HorizontalAlignment.LEFT);
             firstCellStyleLeftNoBorder.setVerticalAlignment(VerticalAlignment.BOTTOM);
             firstCellStyleLeftNoBorder.setWrapText(true);
@@ -701,6 +715,7 @@ public class Main_1 {
         cellStyle.setBottomBorderColor(color);
         cellStyle.setLeftBorderColor(color);
     }
+
     private static void createBorderB(short color, XSSFCellStyle cellStyle) {
         cellStyle.setBorderBottom(BorderStyle.THIN);
         cellStyle.setBottomBorderColor(color);
