@@ -357,25 +357,27 @@ public class Main_1 {
             rowNum++;
             int rowCount = 1;
             for(ProductInOrder productInOrder : productsInOrders){
-                CellRangeAddress cellProduct = new CellRangeAddress(rowNum, rowNum, 2, 3);
-                sheet.addMergedRegion(cellProduct);
+                if(productInOrder.getProductAmount() != null && productInOrder.getProductAmount().intValue() > 0) {
+                    CellRangeAddress cellProduct = new CellRangeAddress(rowNum, rowNum, 2, 3);
+                    sheet.addMergedRegion(cellProduct);
 
-                List<String> data1 = new ArrayList<>();
-                String model = "";
-                if(productInOrder.getProductModel() != null && productInOrder.getProductModel().trim().length() > 0){
-                    model = " - (" + productInOrder.getProductModel() + ")";
+                    List<String> data1 = new ArrayList<>();
+                    String model = "";
+                    if (productInOrder.getProductModel() != null && productInOrder.getProductModel().trim().length() > 0) {
+                        model = " - (" + productInOrder.getProductModel() + ")";
+                    }
+                    data1.add(0, "" + rowCount++);
+                    data1.add(1, "категория" + productInOrder.getProductId());
+                    data1.add(2, productInOrder.getProductName() + model);
+                    data1.add(3, productInOrder.getProductAmountString());
+                    data1.add(4, productInOrder.getProductPriceString());
+                    data1.add(5, order.getCountDay() + "");
+                    data1.add(6, "" + (productInOrder.getProductPrice() * productInOrder.getProductAmount() * order.getCountDay()));
+                    data1.add(7, order.getDescription());
+                    createTableRow2(rowNum, sheet, firstCellStyleLeft, cellHeadStyleCenterBold, data1, null);
+
+                    rowNum++;
                 }
-                data1.add(0,"" + rowCount++);
-                data1.add(1,"категория" + productInOrder.getProductId());
-                data1.add(2,productInOrder.getProductName() + model);
-                data1.add(3,productInOrder.getProductAmountString());
-                data1.add(4,productInOrder.getProductPriceString());
-                data1.add(5,order.getCountDay() + "");
-                data1.add(6,"" + (productInOrder.getProductPrice() * productInOrder.getProductAmount() * order.getCountDay()));
-                data1.add(7,order.getDescription());
-                createTableRow2(rowNum, sheet, firstCellStyleLeft, cellHeadStyleCenterBold, data1, null);
-
-                rowNum++;
             }
 
             Row rowSum = sheet.createRow(++rowNum);
